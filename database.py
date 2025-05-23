@@ -36,31 +36,41 @@ def criar_aluno():
         listar_alunos()
 
 def editar_aluno():
-    aluno = session.query(Aluno).filter(Aluno.nome == "Ybson").first()
+    selecionado = lista.curselection()
+    novo_nome = entry_nome.get()
+    nova_idade = entry_idade.get()
 
-    if aluno:
-        aluno.idade = 15
+    if selecionado and novo_nome and nova_idade:
+        aluno_id = int(lista.get(selecionado).split(" | ")[0])
+        aluno = session.query(Aluno).filter(Aluno.id == aluno_id).first()
+        aluno.nome = novo_nome
+        aluno.idade = nova_idade
         session.commit()
-        print("Aluno atualizado com sucesso!")
-    else:
-        print("Aluno não encontrado.")
+
+        #Limpa os campos após o envio
+        entry_nome.delete(0,tk.END)
+        entry_idade.delete(0,tk.END)
+
+        listar_alunos()
 
 def deletar_aluno():
-    aluno = session.query(Aluno).filter(Aluno.id == 4).first()
+    selecionado = lista.curselection()
 
-    if aluno:
+    if selecionado:
+
+        aluno_id = int(lista.get(selecionado).split(" | ")[0])
+        aluno = session.query(Aluno).filter(Aluno.id == aluno_id).first()
         session.delete(aluno)
         session.commit()
-        print("Aluno removido com sucesso!")
-    else:
-        print("Aluno não encontrado.")
+        
+        listar_alunos()
 
 
 def listar_alunos():
     lista.delete(0, tk.END)
     alunos = session.query(Aluno).all()
     for aluno in alunos:
-        lista.insert(tk.END, f"ID: {aluno.id} | Nome: {aluno.nome} | Idade: {aluno.idade}")
+        lista.insert(tk.END, f"{aluno.id} | Nome: {aluno.nome} | Idade: {aluno.idade}")
 
 # Criação da tela
 
