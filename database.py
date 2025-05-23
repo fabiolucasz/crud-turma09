@@ -20,10 +20,20 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 def criar_aluno():
-    novo_aluno = Aluno(nome="Riquelme joga fácil", idade=55)
-    session.add(novo_aluno)
-    session.commit()
+    nome = entry_nome.get()
+    idade = entry_idade.get()
 
+    if nome and idade:
+
+        novo_aluno = Aluno(nome=nome, idade=idade)
+        session.add(novo_aluno)
+        session.commit()
+
+        #Limpa os campos após o envio
+        entry_nome.delete(0,tk.END)
+        entry_idade.delete(0,tk.END)
+
+        listar_alunos()
 
 def editar_aluno():
     aluno = session.query(Aluno).filter(Aluno.nome == "Ybson").first()
@@ -78,6 +88,13 @@ btn_adicionar_aluno.pack()
 
 lista = tk.Listbox(janela, width=50, height=15)
 lista.pack()
+
+#Botão Editar
+btn_editar_aluno = tk.Button(janela, text="Editar", command=editar_aluno)
+btn_editar_aluno.pack(pady=10,padx=(90,0), side="left")
+#Botão Excluir
+btn_deletar_aluno = tk.Button(janela, text="Deletar", command=deletar_aluno)
+btn_deletar_aluno.pack(pady=10,padx=(0,90), side="right")
 
 
 listar_alunos()
